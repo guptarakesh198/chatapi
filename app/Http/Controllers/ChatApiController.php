@@ -82,7 +82,6 @@ class ChatApiController extends Controller
 
     public function send_list(Request $request){
 
-
     	$validator = \Validator::make(
 			$request->all(), 
 			[
@@ -103,6 +102,40 @@ class ChatApiController extends Controller
 
 		$out = array('success'=>true,'data'=>$data);
 		return response()->json($out, 200);
+
+    }
+
+    public function message_seen(Request $request){
+
+    	$validator = \Validator::make(
+			$request->all(), 
+			[
+				'sender_id' => 'required|numeric',
+			    'receiver_id' => 'required|numeric',
+			    'msg_id' => 'required|numeric',
+			]
+		);
+
+		if($validator->fails()){
+			$out = array('success'=>false,'error'=>$validator->getMessageBag()->first());
+		    return response()->json($out, 200);
+		}
+
+		$table_name = ChatHelper::chat_init($request->sender_id,$request->receiver_id);
+
+		$chat_table = new ChatData(['table'=>$table_name]);
+
+	    if($chat_table->where('id',$request->msg_id)->update(['is_seen'=>1])){
+
+	    	$out = array('success'=>true);
+			return response()->json($out, 200);
+
+	    }else{
+
+	    	$out = array('success'=>false);
+			return response()->json($out, 200);
+
+	    }
 
     }
 

@@ -21,7 +21,7 @@ class ChatData extends Model
 
 	public function scopeActivityOlderThan($query, $interval)
 	{
-	    return $query->where('created_at', '<', Carbon::now()->subMinutes($interval)->toDateTimeString());
+	    return $query->where('is_seen',1)->where('created_at', '<', Carbon::now()->subMinutes($interval)->toDateTimeString());
 	}
 
 }

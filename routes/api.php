@@ -22,6 +22,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::get('/index', [ChatApiController::class, 'index']);
+
 Route::post('/user_list', [ChatApiController::class, 'user_list']);
-Route::post('/send_message', [ChatApiController::class, 'send_message']);
-Route::post('/send_list', [ChatApiController::class, 'send_list']);
+
+Route::get('/send_message', [ChatApiController::class, 'send_message']);
+
+Route::get('/send_list', [ChatApiController::class, 'send_list']);
+
+Route::get('/message_seen', [ChatApiController::class, 'message_seen']);

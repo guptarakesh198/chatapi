@@ -26,10 +26,11 @@ class ChatHelper
 
     	if (!Schema::hasTable($table_name)) {
 
-	    	Schema::create($table_name, function (Blueprint $table) {
+	      Schema::create($table_name, function (Blueprint $table) {
 	        $table->id();
 	        $table->integer('user_id');
 	        $table->string('message');
+	        $table->boolean('is_seen')->default(0);
 	        $table->timestamps();
 	      });
 
