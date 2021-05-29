@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use ChatHelper;
 use App\Models\ChatData;
+use App\Models\ChatUser;
+
 
 class ChatApiController extends Controller
 {
@@ -12,7 +14,38 @@ class ChatApiController extends Controller
     public function index(){
 
       	return ['api_version' => '1.0.0'];
-    } 
+    }
+
+    public function user_list(Request $request){
+
+    	$validator = \Validator::make(
+			$request->all(), 
+			[
+			    'phoneno' => 'required|numeric',
+			]
+		);
+
+		if($validator->fails()){
+			$out = array('success'=>false,'error'=>$validator->getMessageBag()->first());
+		    return response()->json($out, 200);
+		}
+
+		$row = ChatUser::where('phoneno',$request->phoneno)->first();
+
+		if($row != null){
+
+			$out = array('success'=>false,'data'=> $row);
+		    return response()->json($out, 200);
+
+		}else{
+
+			$out = array('success'=>false,'error'=> 'No User Found');
+		    return response()->json($out, 200);
+
+		}
+
+
+    }
 
     public function send_message(Request $request){
 
@@ -27,7 +60,7 @@ class ChatApiController extends Controller
 
 		if($validator->fails()){
 			$out = array('success'=>false,'error'=>$validator->getMessageBag()->first());
-		    return response()->json($out, 422);
+		    return response()->json($out, 200);
 		}
 
 		$table_name = ChatHelper::chat_init($request->sender_id,$request->receiver_id);
@@ -60,7 +93,7 @@ class ChatApiController extends Controller
 
 		if($validator->fails()){
 			$out = array('success'=>false,'error'=>$validator->getMessageBag()->first());
-		    return response()->json($out, 422);
+		    return response()->json($out, 200);
 		}
 
 		$table_name = ChatHelper::chat_init($request->sender_id,$request->receiver_id);
